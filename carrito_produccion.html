@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producción Carrito A</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        #carritoImage {
+            width: 300px;
+            height: auto;
+            margin: 20px;
+        }
+        canvas {
+            width: 80% !important;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        #cronometro {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #inventario {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Producción Carrito A</h1>
+
+    <div class="container">
+        <img id="carritoImage" src="https://your-image-link-here.com/carrito_a_image.png" alt="Carrito A">
+        <div id="cronometro">Tiempo: 0 s</div>
+        <canvas id="graficaProduccion"></canvas>
+        <div id="inventario">Inventario: 100,000 unidades de cada material</div>
+        <button onclick="reiniciarProduccion()">Reiniciar Producción</button>
+    </div>
+
+    <script>
+        // Configuración de la gráfica
+        var ctx = document.getElementById('graficaProduccion').getContext('2d');
+        var grafica = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Carritos Producidos',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Variables de producción y cronómetro
+        let tiempo = 0;
+        let produccion = 0;
+        let interval;
+
+        // Función para iniciar el cronómetro
+        function iniciarCronometro() {
+            interval = setInterval(function() {
+                tiempo++;
+                document.getElementById('cronometro').textContent = "Tiempo: " + tiempo + " s";
+            }, 1000);
+        }
+
+        // Función para actualizar la producción y la gráfica
+        function actualizarProduccion() {
+            produccion++;
+            grafica.data.labels.push(produccion);
+            grafica.data.datasets[0].data.push(produccion);
+            grafica.update();
+            // Reducir inventario (por ejemplo, cada vez que se produce un carrito)
+            document.getElementById('inventario').textContent = "Inventario: " + (100000 - produccion) + " unidades restantes";
+        }
+
+        // Función para reiniciar la producción
+        function reiniciarProduccion() {
+            clearInterval(interval);
+            tiempo = 0;
+            produccion = 0;
+            grafica.data.labels = [];
+            grafica.data.datasets[0].data = [];
+            grafica.update();
+            document.getElementById('cronometro').textContent = "Tiempo: 0 s";
+            document.getElementById('inventario').textContent = "Inventario: 100,000 unidades de cada material";
+            iniciarCronometro();
+        }
+
+        // Simular escaneo de QR (esto se haría con el escaneo real en el entorno adecuado)
+        setTimeout(function() {
+            iniciarCronometro();
+            actualizarProduccion();
+        }, 3000); // Simula escaneo y empieza la producción después de 3 segundos
+    </script>
+</body>
+</html>
