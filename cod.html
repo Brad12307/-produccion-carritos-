@@ -1,0 +1,87 @@
+de Producción de Carritos</h1>
+    
+    <div class="content">
+        <video id="qr-reader" style="width: 100%;"></video>
+        <div>
+            <img id="carrito-img" src="" alt="Imagen del carrito">
+        </div>
+        <div id="grafica">Gráfica de Producción: 0</div>
+        <div id="inventario">
+            <p>Inventario de Materiales</p>
+            <p>Material A: <span id="materialA">100000</span></p>
+            <p>Material B: <span id="materialB">100000</span></p>
+        </div>
+        <button id="reiniciar-btn">Reiniciar Producción</button>
+    </div>
+
+    <!-- Incluir la librería para escaneo QR -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        let produccion = 0;
+        let materialA = 100000;
+        let materialB = 100000;
+        let tipoCarrito = '';
+
+        const carritoImg = document.getElementById('carrito-img');
+        const grafica = document.getElementById('grafica');
+        const materialAElement = document.getElementById('materialA');
+        const materialBElement = document.getElementById('materialB');
+        const reiniciarBtn = document.getElementById('reiniciar-btn');
+
+        // Iniciar el escáner QR
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(decodedText);
+            // Determinar el tipo de carrito basado en el código QR
+            if (decodedText === 'carritoA') {
+                tipoCarrito = 'A';
+                carritoImg.src = 'https://via.placeholder.com/200?text=Carrito+A';
+                if (materialA >= 4) {
+                    materialA -= 4;
+                    materialB -= 1;
+                    produccion++;
+                }
+            } else if (decodedText === 'carritoB') {
+                tipoCarrito = 'B';
+                carritoImg.src = 'https://via.placeholder.com/200?text=Carrito+B';
+                if (materialA >= 4) {
+                    materialA -= 4;
+                    materialB -= 1;
+                    produccion++;
+                }
+            }
+
+            // Actualizar la gráfica de producción
+            grafica.textContent = Gráfica de Producción: ${produccion};
+
+            // Actualizar el inventario
+            materialAElement.textContent = materialA;
+            materialBElement.textContent = materialB;
+        }
+
+        // Configurar el escáner QR
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: 250,
+            },
+            onScanSuccess
+        ).catch(err => {
+            console.error("Error al iniciar el escáner QR:", err);
+        });
+
+        // Función de reinicio
+        reiniciarBtn.addEventListener('click', () => {
+            produccion = 0;
+            materialA = 100000;
+            materialB = 100000;
+            tipoCarrito = '';
+            carritoImg.src = '';
+            grafica.textContent = 'Gráfica de Producción: 0';
+            materialAElement.textContent = materialA;
+            materialBElement.textContent = materialB;
+        });
+    </script>
+</body>
+</html>
